@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="myCanvas" style="border:1px solid grey;background: blac;"></canvas>
+
+<style>
+    *{
+        margin: 0px;
+        padding: 0px;
+    }
+    canvas {
+        background: #000;
+        overflow: hidden;
+        position: fixed;
+    }
+</style>
+
+<script>
+var x, y, w, h, dots = [],  radious, color, can, c;    
+can = document.getElementById("myCanvas");
+
+w = can.width = window.innerWidth;
+h = can.height = window.innerHeight;
+c = can.getContext("2d");
+
+// =================================================
+class Ball{
+ constructor(x, y, radious, updateBall, color){
+  this.x = x;
+  this.y = y;
+  this.color = color;
+  this.radious = radious;
+  this.updateBall = updateBall;
+  this.rbfr = 100;
+ }
+
+ drow(){
+    c.beginPath();
+    c.arc(this.x, this.y, this.radious, 0, 2 * Math.PI);
+    c.fillStyle = this.color;
+    c.fill();
+ }
+
+ update(){
+
+    this.drow();
+    this.x += this.updateBall.x;
+    this.y += this.updateBall.y;
+    this.rbfr--;
+
+    
+ }
+
+}
+let mouse = {
+    x : w / 2,
+    y : h / 2
+}
+
+
+window.addEventListener("mousemove", (e)=>{
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  console.log(mouse)
+})
+
+let hue = 0;
+// ================================
+
+function init(){
+  
+    radious = 20;
+    for (let i = 0; i < 30; i++) {
+      
+        let divition = (Math.PI * 2) / 30;
+        x = mouse.x;
+        y = mouse.y;
+        dots.push(
+            new Ball(x, y, 5, {
+            x : (Math.sin(divition * i) * 2),
+            y :  (Math.cos(divition * i) * 2)
+        },`hsl(${hue}, 100%, 50%)`
+        
+        )) 
+        // dots.forEach((dot)=>{
+        //   dot.drow()
+        // })
+        
+    }
+    hue = hue + 2
+
+    if (dots.length > 10000) {
+   dots.length = 0 
+}
+
+
+}
+
+
+
+function generatingRing(){
+    setTimeout(generatingRing, 100)
+   init()
+
+
+}
+
+
+generatingRing()
+
+
+function animation(){
+  
+    requestAnimationFrame(animation)
+    c.clearRect(0, 0, w, h)
+    dots.forEach((dot , i)=>{
+        //   if(dot.rbfr < 0 ) {
+        //     dots.splice(i, 1)
+        //   } else {
+        //     dot.update()
+        //   }
+        dot.update()
+          
+        })
+
+}
+animation()
+
+
+
+
+console.log(dots)
+
+let count = 50;
+
+setInterval(() => {
+    count++
+    // console.log(count)
+   let result = Math.sin(count) * 6;
+   console.log(result)
+}, 100);
+
+// let ball1 = new Ball(100, 100, 50);
+// let ball2 = new Ball(200, 50, 20);
+// console.log(ball1)
+// ball1.drow()
+// ball2.drow()
+</script> 
+
+</body>
+</html>
